@@ -6,7 +6,7 @@ class BaseConfig:
     DEBUG = True
     POSTGRES_URL="migration-server714.postgres.database.azure.com"  #TODO: Update value
     POSTGRES_USER="azureuser" #TODO: Update value
-    POSTGRES_PW="Admin714"   #TODO: Update value
+    POSTGRES_PW="xxxxxxxxxx"   #TODO: Update value
     POSTGRES_DB="techconfdb"   #TODO: Update value
     DB_URL = 'postgresql://{user}:{pw}@{url}/{db}'.format(user=POSTGRES_USER,pw=POSTGRES_PW,url=POSTGRES_URL,db=POSTGRES_DB)
     SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI') or DB_URL

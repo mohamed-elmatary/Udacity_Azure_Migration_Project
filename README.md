@@ -76,3 +76,38 @@ This is a placeholder section where you can provide an explanation and reasoning
 
 - first Azure Web App in current of situation the web app contain Lightweight APIs tend to be well-suited to App Services, and won't approach the size limit for App Services very easily. Additionally, App Services cost less. Lastly, since the ability to scale   quickly is less of a concern, we don't need to factor that into the analysis.
 - second Azure Function is a good compute option suitable for our case and we can intgerat easily our Azure Service Bus Queue Trigger function easily with our service bus with help of azure tool in visual studio code 
+
+
+- current architecture we used Azure Wep App on App Service Plan to avoid any complexity in deployment and management in Azure Virtual Machine, App Service adds the power of Microsoft Azure to your application, including improved security, load balancing, autoscaling, and automated management also support multiple languages and frameworks
+because App Service is Paas but virtual machine is Iaas for our web app the app service plan it will be very suitable because our app has lightweight APIs so App Service will be suitable for current and previous architecture
+
+- previous architecture we may face a performance problem like scenario you mentioned (If we are triggering mail through the web app, if there are 1000 attendees the user must wait on the notification page until all attendees are notified due to this timeout issues can easily occur.)
+  this could happen because if you send email for each attendee that could take long time and also may fail to send email due to network
+  so we solved this issue by modifying architecture by decoupling the specific part of the application that can consume more time and may cause performance issue or timeout and also not adding any thing return to user in response
+  this part also can run in background process asynchronously and doesn't affect response this like very small microservices architecture 
+  here the role of azure function we moved this part of code to it to process our notification, we also send notification_id to message broker and subscriber (Azure Function will care with this part of sending email and update db)
+  if the azure function crashed or didn't consume the message we still have another opportunity due to retry mechanism in the message brocker after fix the crashing
+
+- azure function consider Lightweight APIs 
+
+ * Processing data and data streams
+ * Integration with Other Azure Services like serviceBus
+ * Supports Different Programming Languages
+ * Cost-Efficient
+
+- ServiceBus Azure Service Bus is a fully managed enterprise message broker with queues base on publish-subscribe pattern used to decouple applications and services from each other transferring data between application and service in form of message
+  in our case between TECHCONF2022 and Our azure funtion that process notification and send email to all attendees
+  azure service bus can integrate with azure function easily
+
+
+- Azure Postgres Database as it is Fully Managed Service no Infrastructure Management Azure handles the underlying infrastructure, such as hardware, networking, and storage, allowing you to focus on your application and data i think it was very easy to integrate and dealing with it.
+  it is first time for me dealing with postgres i always use sql server but i think they are similar and PgAdmin was very friendly and using Sql Query Language is a big feature help me to accomplish task of (connection, query and update DB by psycopg2) very easy  
+
+
+- Drawbacks ** this architecture like small microservices architecture we have service to save notification and other to process the notification and update db,
+  we communicate between them asynchronously during message broker (Azure Service Bus) so now we have two services instead of one and also message broker although the benefit we get from decoupling the appliction and solve problem of performance 
+  also problem in one component like azure service doesn't affect other component TechConf2022 app (the application still working) doesn't affect on avilabilty of application
+  ** but we increased the complexity of architecture , need more skills and tools to use , more time to build , and also increase complexity of monitoring and troubleshooting and problem detection to know which part has 
+  the problem
+  increased debugging in multiple apps this consume more time
+  also this architecture made me need additional resources from azure to accomplish it this added additional costs for me 
